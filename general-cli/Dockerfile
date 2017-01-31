@@ -4,6 +4,7 @@ MAINTAINER Blake Cerecero <blake@digitalblake.com
 # PHP
 RUN apt-get update -y \
     && apt-get install curl -y \
+    && apt-get install wget -y \
     && apt-get install php7.0 -y \
     && apt-get install zip -y \
     && apt-get install mysql-client -y \
@@ -14,7 +15,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 # Install WP-CLI 
 RUN apt-get update -y \
-    && apt-get install curl -y \
     && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
@@ -38,6 +38,8 @@ RUN apt-get install zsh -y \
     && bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
     && echo 'alias ll="ls -lagh"' >> ~/.zshrc \
     && echo 'alias wp="wp --allow-root"' >> ~/.zshrc \
+    && echo 'alias wp="bower --allow-root"' >> ~/.zshrc \
+    && echo 'alias rm="rm -i"' >> ~/.zshrc \
     && sed -i '/plugins=(git)/c\plugins=(git bower npm composer gulp wp-cli extract yarn redis-cli)' ~/.zshrc \
     && sed -i '/\# ZSH_CUSTOM=\/path\/to\/new-custom-folder/c\ZSH_CUSTOM=~/custom-scripts' ~/.zshrc
 
