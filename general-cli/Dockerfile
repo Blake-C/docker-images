@@ -38,7 +38,7 @@ RUN apt-get install zsh -y \
     && bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
     && echo 'alias ll="ls -lagh"' >> ~/.zshrc \
     && echo 'alias wp="wp --allow-root"' >> ~/.zshrc \
-    && echo 'alias wp="bower --allow-root"' >> ~/.zshrc \
+    && echo 'alias bower="bower --allow-root"' >> ~/.zshrc \
     && echo 'alias rm="rm -i"' >> ~/.zshrc \
     && sed -i '/plugins=(git)/c\plugins=(git bower npm composer gulp wp-cli extract yarn redis-cli)' ~/.zshrc \
     && sed -i '/\# ZSH_CUSTOM=\/path\/to\/new-custom-folder/c\ZSH_CUSTOM=~/custom-scripts' ~/.zshrc
