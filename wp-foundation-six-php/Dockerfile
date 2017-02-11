@@ -3,7 +3,7 @@ MAINTAINER Blake Cerecero <blake@digitalblake.com>
 
 # We need these system-level scritps to run WordPress successfully
 RUN apk add --no-cache mysql-client curl \
-    imagemagick-dev
+    redis imagemagick-dev
 
 # As per image documentation, this is how we install PHP modules
 RUN docker-php-ext-install -j$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
