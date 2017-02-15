@@ -17,3 +17,28 @@ theme-unit-test() {
 	rm theme-unit-test-data.xml
 	cd $WORKING_DIR
 }
+
+wp-db-export() {
+	echo "\n================================================================="
+	echo "Export WordPress database"
+	echo "================================================================="
+
+	echo "\nLeave this blank if you do not want to change the site url"
+	vared -p "Production URL: " -c REPLACEURL
+
+	WORKING_DIR=$(pwd);
+	cd $SERVER_DIR
+
+	if [[ "$REPLACEURL" ]]; then
+		wp search-replace "0.0.0.0:8080" "$REPLACEURL" --allow-root
+	fi
+
+	wp db export $DATABASE_BACKUPS/wp_foundation_six_$(date +"%Y%m%d%H%M%s")_database.sql --allow-root
+	cd $WORKING_DIR
+
+	if [[ "$REPLACEURL" != "" ]]; then
+		wp search-replace "$REPLACEURL" "0.0.0.0:8080" --allow-root
+	fi
+
+	echo "\n"
+}
