@@ -1,6 +1,12 @@
 #!/bin/zsh
 
 SERVER_DIR='/var/www/public_html'
+DATABASE_BACKUPS='/var/www/data/backups'
+
+alias root="cd $SERVER_DIR"
+alias theme="cd $SERVER_DIR/wp-content/themes/wp-foundation-six"
+alias theme_components="cd $SERVER_DIR/wp-content/themes/wp-foundation-six/theme_components"
+
 theme-unit-test() {
 	WORKING_DIR=$(pwd);
 
