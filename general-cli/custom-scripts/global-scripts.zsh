@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 SERVER_DIR='/var/www/public_html'
-DATABASE_BACKUPS='/var/www/data/backups'
+DATABASE_BACKUPS_DIR='/var/www/data/backups'
 
 alias root="cd $SERVER_DIR"
 alias theme="cd $SERVER_DIR/wp-content/themes/wp-foundation-six"
@@ -33,7 +33,7 @@ wp-db-export() {
 		wp search-replace "0.0.0.0:8080" "$REPLACEURL" --allow-root
 	fi
 
-	wp db export $DATABASE_BACKUPS/wp_foundation_six_$(date +"%Y%m%d%H%M%s")_database.sql --allow-root
+	wp db export $DATABASE_BACKUPS_DIR/wp_foundation_six_$(date +"%Y%m%d%H%M%s")_database.sql --allow-root
 	cd $WORKING_DIR
 
 	if [[ "$REPLACEURL" != "" ]]; then
@@ -44,9 +44,11 @@ wp-db-export() {
 }
 
 wp-init() {
-	root
+	WORKING_DIR=$(pwd);
 
-	echo "\nRunning Composer"
+	cd $SERVER_DIR
+
+	echo "\nRunning Composer to install WordPress Files"
 	composer install
 	composer update
 
@@ -71,6 +73,7 @@ wp-init() {
 
 		echo "\n\n"
 
+		# change directories into the theme
 		theme
 
 		echo "\nRunning Yarn"
@@ -79,7 +82,7 @@ wp-init() {
 		echo "\nRunning Gulp"
 		gulp
 
-		root
+		cd $SERVER_DIR
 
 		echo "\nRunning WP-CLI"
 
@@ -124,7 +127,11 @@ wp-init() {
 		echo "\n\nDon't forget to:"
 		echo "Update your style.css file in the base theme"
 		echo "Go to http://realfavicongenerator.net/, and update your favicons/app icons\n\n"
+
+		cd $WORKING_DIR
 	else
 		echo "WordPress appears to already be installed, this script will not run."
+
+		cd $WORKING_DIR
 	fi
 }
