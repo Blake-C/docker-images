@@ -1,7 +1,10 @@
 #!/bin/zsh
 
+# The global variables and aliases are used in the below functions
+# They are also available in the cli container globally
 SERVER_DIR='/var/www/public_html'
 DATABASE_BACKUPS_DIR='/var/www/data/backups'
+EJECTED_DIR='/var/www/ejected'
 
 alias root="cd $SERVER_DIR"
 alias theme="cd $SERVER_DIR/wp-content/themes/wp-foundation-six"
@@ -34,11 +37,12 @@ wp-db-export() {
 	fi
 
 	wp db export $DATABASE_BACKUPS_DIR/wp_foundation_six_$(date +"%Y%m%d%H%M%s")_database.sql --allow-root
-	cd $WORKING_DIR
 
 	if [[ "$REPLACEURL" != "" ]]; then
 		wp search-replace "$REPLACEURL" "0.0.0.0:8080" --allow-root
 	fi
+
+	cd $WORKING_DIR
 
 	echo "\n"
 }
@@ -73,8 +77,7 @@ wp-init() {
 
 		echo "\n\n"
 
-		# change directories into the theme
-		theme
+		cd $SERVER_DIR/wp-content/themes/wp-foundation-six
 
 		echo "\nRunning Yarn"
 		yarn
@@ -134,4 +137,45 @@ wp-init() {
 
 		cd $WORKING_DIR
 	fi
+}
+
+wp-eject() {
+	WORKING_DIR=$(pwd);
+
+	cd $EJECTED_DIR
+	EJECTED_PROJECT_DIR=wp_foundation_six_$(date +"%Y%m%d%H%M%s")
+	take $EJECTED_PROJECT_DIR
+
+	wp core download --allow-root
+
+	rm -rf wp-content
+
+	rsync -av --progress $SERVER_DIR/wp-content ./ --exclude wp-foundation-six
+
+	cd $SERVER_DIR/wp-content/themes/wp-foundation-six
+
+	yarn
+
+	gulp --build
+
+	cd $EJECTED_DIR/$EJECTED_PROJECT_DIR
+
+	rsync -av --progress $SERVER_DIR/wp-content/themes/wp-foundation-six-build ./wp-content/themes
+
+	mv ./wp-content/themes/wp-foundation-six-build ./wp-content/themes/wp-foundation-six
+
+	cp $SERVER_DIR/.htaccess ./.htaccess
+	cp $SERVER_DIR/robots-dev.txt ./robots-dev.txt
+	cp $SERVER_DIR/robots.txt ./robots.txt
+
+	cd $EJECTED_DIR
+
+	zip -r $EJECTED_PROJECT_DIR.zip $EJECTED_PROJECT_DIR
+
+	rm -rf $EJECTED_PROJECT_DIR
+	rm -rf $SERVER_DIR/wp-content/themes/wp-foundation-six-build
+
+	cd $WORKING_DIR
+
+	wp-db-export
 }
