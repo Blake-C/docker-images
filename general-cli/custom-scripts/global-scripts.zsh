@@ -116,7 +116,7 @@ wp-init() {
 
 		#Setup main navigation
 		wp menu create "Main Navigation" --allow-root
-		wp menu location assign main-navigation primary
+		wp menu location assign main-navigation primary --allow-root
 
 		# add pages to navigation
 		export IFS=" "
