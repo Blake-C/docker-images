@@ -44,6 +44,12 @@ wp-db-export() {
 }
 
 wp-init() {
+	root
+
+	echo "\nRunning Composer"
+	composer install
+	composer update
+
     if ! $(wp core is-installed); then
 		echo "\n\n"
 
@@ -64,12 +70,6 @@ wp-init() {
 		vared -p "Site Name: " -c SITENAME
 
 		echo "\n\n"
-
-		root
-
-		echo "\nRunning Composer"
-		composer install
-		composer update
 
 		theme
 
@@ -113,6 +113,7 @@ wp-init() {
 
 		#Setup main navigation
 		wp menu create "Main Navigation" --allow-root
+		wp menu location assign main-navigation primary
 
 		# add pages to navigation
 		export IFS=" "
