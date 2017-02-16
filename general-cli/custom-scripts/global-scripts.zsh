@@ -140,42 +140,44 @@ wp-init() {
 }
 
 wp-eject() {
-	WORKING_DIR=$(pwd);
+	if [ -d "$EJECTED_DIR" ]; then
+		WORKING_DIR=$(pwd);
 
-	cd $EJECTED_DIR
-	EJECTED_PROJECT_DIR=wp_foundation_six_$(date +"%Y%m%d%H%M%s")
-	take $EJECTED_PROJECT_DIR
+		cd $EJECTED_DIR
+		EJECTED_PROJECT_DIR=wp_foundation_six_$(date +"%Y%m%d%H%M%s")
+		take $EJECTED_PROJECT_DIR
 
-	wp core download --allow-root
+		wp core download --allow-root
 
-	rm -rf wp-content
+		rm -rf wp-content
 
-	rsync -av --progress $SERVER_DIR/wp-content ./ --exclude wp-foundation-six
+		rsync -av --progress $SERVER_DIR/wp-content ./ --exclude wp-foundation-six
 
-	cd $SERVER_DIR/wp-content/themes/wp-foundation-six
+		cd $SERVER_DIR/wp-content/themes/wp-foundation-six
 
-	yarn
+		yarn
 
-	gulp --build
+		gulp --build
 
-	cd $EJECTED_DIR/$EJECTED_PROJECT_DIR
+		cd $EJECTED_DIR/$EJECTED_PROJECT_DIR
 
-	rsync -av --progress $SERVER_DIR/wp-content/themes/wp-foundation-six-build ./wp-content/themes
+		rsync -av --progress $SERVER_DIR/wp-content/themes/wp-foundation-six-build ./wp-content/themes
 
-	mv ./wp-content/themes/wp-foundation-six-build ./wp-content/themes/wp-foundation-six
+		mv ./wp-content/themes/wp-foundation-six-build ./wp-content/themes/wp-foundation-six
 
-	cp $SERVER_DIR/.htaccess ./.htaccess
-	cp $SERVER_DIR/robots-dev.txt ./robots-dev.txt
-	cp $SERVER_DIR/robots.txt ./robots.txt
+		cp $SERVER_DIR/.htaccess ./.htaccess
+		cp $SERVER_DIR/robots-dev.txt ./robots-dev.txt
+		cp $SERVER_DIR/robots.txt ./robots.txt
 
-	cd $EJECTED_DIR
+		cd $EJECTED_DIR
 
-	zip -r $EJECTED_PROJECT_DIR.zip $EJECTED_PROJECT_DIR
+		zip -r $EJECTED_PROJECT_DIR.zip $EJECTED_PROJECT_DIR
 
-	rm -rf $EJECTED_PROJECT_DIR
-	rm -rf $SERVER_DIR/wp-content/themes/wp-foundation-six-build
+		rm -rf $EJECTED_PROJECT_DIR
+		rm -rf $SERVER_DIR/wp-content/themes/wp-foundation-six-build
 
-	cd $WORKING_DIR
+		cd $WORKING_DIR
 
-	wp-db-export
+		wp-db-export
+	fi
 }
