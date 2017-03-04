@@ -176,8 +176,14 @@ wp-eject() {
 		rm -rf $EJECTED_PROJECT_DIR
 		rm -rf $SERVER_DIR/wp-content/themes/wp-foundation-six-build
 
+		cd $SERVER_DIR/wp-content/themes/wp-foundation-six
+
+		gulp
+
 		cd $WORKING_DIR
 
 		wp-db-export
+	else
+		echo "The $($EJECTED_DIR) directory does not exist"
 	fi
 }
