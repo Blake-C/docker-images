@@ -92,7 +92,7 @@ wp-init() {
 		wp core install --url="localhost" --title="$SITENAME" --admin_user="$WPUSER" --admin_password="$PASSWORD" --admin_email="$WP_ADMIN_MAIL" --allow-root
 		wp option update siteurl "http://localhost/wp" --allow-root
 
-		wp user update $WPUSER --admin_color=Light --show_admin_bar_front=false --allow-root
+		wp user update $WPUSER --admin_color=light --show_admin_bar_front=false --allow-root
 
 		# show only 6 posts on an archive page, remove default tagline
 		wp option update posts_per_page 6 --allow-root
