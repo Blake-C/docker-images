@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # The global variables and aliases are used in the below functions
 # They are also available in the cli container globally
@@ -54,26 +54,27 @@ wp-init() {
 
 	echo "\nRunning Composer to install WordPress Files"
 	composer install
-	composer update
 
     if ! $(wp core is-installed); then
 		echo "\n\n"
 
-		local PASSWORD
 		local WPUSER
 		local WP_ADMIN_MAIL
+		local PASSWORD
+		local SITENAME
 
-		# Accept user input for the databse name
-		vared -p "Wordpress Username: " -c WPUSER
+		# Accept user input for the Username name
+		read "WPUSER?Wordpress Username: "
 
-		# Accept user input for the databse name
-		vared -p "Wordpress User Email Address: " -c WP_ADMIN_MAIL
+		# Accept user input for the Email Address name
+		read "WP_ADMIN_MAIL?Wordpress User Email Address: "
 
-		# Accept user input for the databse name
-		vared -p "Wordpress User Password: " -c PASSWORD
+		# Accept user input for the User Password name
+		read -s "PASSWORD?Wordpress User Password: "
+		echo ""
 
-		# Accept user input for the databse name
-		vared -p "Site Name: " -c SITENAME
+		# Accept user input for the Site Name name
+		read "SITENAME?Site Name: "
 
 		echo "\n\n"
 
@@ -155,37 +156,43 @@ wp-eject() {
 
 		rsync -av --progress $SERVER_DIR/wp-content ./ --exclude wp-foundation-six
 
-		cd $SERVER_DIR/wp-content/themes/wp-foundation-six
+		if [ -d "$SERVER_DIR/wp-content/themes/wp-foundation-six" ]; then
 
-		yarn
+			cd $SERVER_DIR/wp-content/themes/wp-foundation-six
 
-		gulp --build
+			yarn
 
-		cd $EJECTED_DIR/$EJECTED_PROJECT_DIR
+			gulp --build
 
-		rsync -av --progress $SERVER_DIR/wp-content/themes/wp-foundation-six-build ./wp-content/themes
+			cd $EJECTED_DIR/$EJECTED_PROJECT_DIR
 
-		mv ./wp-content/themes/wp-foundation-six-build ./wp-content/themes/wp-foundation-six
+			rsync -av --progress $SERVER_DIR/wp-content/themes/wp-foundation-six-build ./wp-content/themes
 
-		cp $SERVER_DIR/.htaccess ./.htaccess
-		cp $SERVER_DIR/robots-dev.txt ./robots-dev.txt
-		cp $SERVER_DIR/robots.txt ./robots.txt
+			mv ./wp-content/themes/wp-foundation-six-build ./wp-content/themes/wp-foundation-six
 
-		cd $EJECTED_DIR
+			cp $SERVER_DIR/.htaccess ./.htaccess
+			cp $SERVER_DIR/robots-dev.txt ./robots-dev.txt
+			cp $SERVER_DIR/robots.txt ./robots.txt
 
-		zip -r $EJECTED_PROJECT_DIR.zip $EJECTED_PROJECT_DIR
+			cd $EJECTED_DIR
 
-		rm -rf $EJECTED_PROJECT_DIR
-		rm -rf $SERVER_DIR/wp-content/themes/wp-foundation-six-build
+			zip -r $EJECTED_PROJECT_DIR.zip $EJECTED_PROJECT_DIR
 
-		cd $SERVER_DIR/wp-content/themes/wp-foundation-six
+			rm -rf $EJECTED_PROJECT_DIR
+			rm -rf $SERVER_DIR/wp-content/themes/wp-foundation-six-build
 
-		gulp
+			cd $SERVER_DIR/wp-content/themes/wp-foundation-six
 
-		cd $WORKING_DIR
+			gulp
 
-		wp-db-export
+			cd $WORKING_DIR
+
+			wp-db-export
+		else
+			echo "The $SERVER_DIR/wp-content/themes/wp-foundation-six directory does not exist"
+			echo "The theme must be named wp-foundation-six for this script to work"
+		fi
 	else
-		echo "The $($EJECTED_DIR) directory does not exist"
+		echo "The $EJECTED_DIR directory does not exist"
 	fi
 }
