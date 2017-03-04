@@ -10,7 +10,7 @@ alias root="cd $SERVER_DIR"
 alias theme="cd $SERVER_DIR/wp-content/themes/wp-foundation-six"
 alias theme_components="cd $SERVER_DIR/wp-content/themes/wp-foundation-six/theme_components"
 
-theme-unit-test() {
+wp-theme-unit-data() {
 	WORKING_DIR=$(pwd);
 
 	cd $SERVER_DIR
@@ -33,13 +33,13 @@ wp-db-export() {
 	cd $SERVER_DIR
 
 	if [[ "$REPLACEURL" ]]; then
-		wp search-replace "0.0.0.0:8080" "$REPLACEURL" --allow-root
+		wp search-replace "localhost" "$REPLACEURL" --allow-root
 	fi
 
 	wp db export $DATABASE_BACKUPS_DIR/wp_foundation_six_$(date +"%Y%m%d%H%M%s")_database.sql --allow-root
 
 	if [[ "$REPLACEURL" != "" ]]; then
-		wp search-replace "$REPLACEURL" "0.0.0.0:8080" --allow-root
+		wp search-replace "$REPLACEURL" "localhost" --allow-root
 	fi
 
 	cd $WORKING_DIR
@@ -64,7 +64,7 @@ wp-init() {
 		local WP_ADMIN_MAIL
 
 		# Accept user input for the databse name
-		vared -p "Wordpress User: " -c WPUSER
+		vared -p "Wordpress Username: " -c WPUSER
 
 		# Accept user input for the databse name
 		vared -p "Wordpress User Email Address: " -c WP_ADMIN_MAIL
@@ -89,8 +89,8 @@ wp-init() {
 
 		echo "\nRunning WP-CLI"
 
-		wp core install --url="0.0.0.0:8080" --title="$SITENAME" --admin_user="$WPUSER" --admin_password="$PASSWORD" --admin_email="$WP_ADMIN_MAIL" --allow-root
-		wp option update siteurl "http://0.0.0.0:8080/wp" --allow-root
+		wp core install --url="localhost" --title="$SITENAME" --admin_user="$WPUSER" --admin_password="$PASSWORD" --admin_email="$WP_ADMIN_MAIL" --allow-root
+		wp option update siteurl "http://localhost/wp" --allow-root
 
 		# show only 6 posts on an archive page, remove default tagline
 		wp option update posts_per_page 6 --allow-root
