@@ -170,9 +170,9 @@ wp-eject() {
 
 			mv ./wp-content/themes/wp-foundation-six-build ./wp-content/themes/wp-foundation-six
 
-			cp $SERVER_DIR/.htaccess ./.htaccess
-			cp $SERVER_DIR/robots-dev.txt ./robots-dev.txt
-			cp $SERVER_DIR/robots.txt ./robots.txt
+			cp $EJECTED_DIR/server-assets/.htaccess ./.htaccess
+			cp $EJECTED_DIR/server-assets/robots-dev.txt ./robots-dev.txt
+			cp $EJECTED_DIR/server-assets/robots.txt ./robots.txt
 
 			cd $EJECTED_DIR
 
