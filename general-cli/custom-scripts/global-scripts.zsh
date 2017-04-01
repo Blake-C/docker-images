@@ -99,6 +99,7 @@ wp-init() {
 		wp option update posts_per_page 6 --allow-root
 		wp option update posts_per_rss 6 --allow-root
 		wp option update blogdescription "" --allow-root
+		wp option update timezone_string America/Chicago --allow-root
 
 		# Delete sample page, and create homepage
 		wp post delete $(wp post list --post_type=page --posts_per_page=1 --post_status=publish --pagename="sample-page" --field=ID --format=ids --allow-root) --allow-root
