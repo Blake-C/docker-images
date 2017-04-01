@@ -50,34 +50,34 @@ wp-db-export() {
 wp-init() {
 	WORKING_DIR=$(pwd);
 
+	echo "\n\n"
+
+	local WPUSER
+	local WP_ADMIN_MAIL
+	local PASSWORD
+	local SITENAME
+
+	# Accept user input for the Username name
+	read "WPUSER?Wordpress Username: "
+
+	# Accept user input for the Email Address name
+	read "WP_ADMIN_MAIL?Wordpress User Email Address: "
+
+	# Accept user input for the User Password name
+	read -s "PASSWORD?Wordpress User Password: "
+	echo ""
+
+	# Accept user input for the Site Name name
+	read "SITENAME?Site Name: "
+
+	echo "\n\n"
+
 	cd $SERVER_DIR
 
 	echo "\nRunning Composer to install WordPress Files"
 	composer install
 
     if ! $(wp core is-installed); then
-		echo "\n\n"
-
-		local WPUSER
-		local WP_ADMIN_MAIL
-		local PASSWORD
-		local SITENAME
-
-		# Accept user input for the Username name
-		read "WPUSER?Wordpress Username: "
-
-		# Accept user input for the Email Address name
-		read "WP_ADMIN_MAIL?Wordpress User Email Address: "
-
-		# Accept user input for the User Password name
-		read -s "PASSWORD?Wordpress User Password: "
-		echo ""
-
-		# Accept user input for the Site Name name
-		read "SITENAME?Site Name: "
-
-		echo "\n\n"
-
 		cd $SERVER_DIR/wp-content/themes/wp-foundation-six
 
 		echo "\nRunning Yarn"
