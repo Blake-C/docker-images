@@ -78,6 +78,14 @@ wp-init() {
 	composer install
 
     if ! $(wp core is-installed); then
+    	# Change table prefix before setting up WordPress database
+    	echo "\nUpdating WordPress table prefix"
+    	NEW_VALUE=$(tr -cd 'a-z' < /dev/urandom | fold -w4 | head -n1)
+    	TABLE_PREFIX="\$table_prefix  = 'wp_';"
+    	TABLE_PREFIX_NEW="\$table_prefix  = '"$NEW_VALUE"_';"
+    	sed -i "/$TABLE_PREFIX/c\\$TABLE_PREFIX_NEW" ./wp-config.php
+
+    	# cd into theme
 		cd $SERVER_DIR/wp-content/themes/wp-foundation-six
 
 		echo "\nRunning Yarn"
