@@ -27,19 +27,23 @@ wp-db-export() {
 	echo "================================================================="
 
 	echo "\nLeave this blank if you do not want to change the site url"
+	echo "If you're moving the site to http://google.com, just put google.com"
 	vared -p "Production URL: " -c REPLACEURL
+	REPLACEURLCLEAN=$(echo $REPLACEURL | sed -e "s/http:\/\///g")
 
 	WORKING_DIR=$(pwd);
 	cd $SERVER_DIR
 
-	if [[ "$REPLACEURL" ]]; then
-		wp search-replace "localhost" "$REPLACEURL" --allow-root
+	if [[ "$REPLACEURLCLEAN" ]]; then
+		wp search-replace "localhost" "$REPLACEURLCLEAN" --allow-root
+		wp option update siteurl "http://$REPLACEURLCLEAN" --allow-root
 	fi
 
 	wp db export $DATABASE_BACKUPS_DIR/wp_foundation_six_$(date +"%Y%m%d%H%M%s")_database.sql --allow-root
 
-	if [[ "$REPLACEURL" != "" ]]; then
-		wp search-replace "$REPLACEURL" "localhost" --allow-root
+	if [[ "$REPLACEURLCLEAN" != "" ]]; then
+		wp search-replace "$REPLACEURLCLEAN" "localhost" --allow-root
+		wp option update siteurl "http://localhost/wp" --allow-root
 	fi
 
 	cd $WORKING_DIR
