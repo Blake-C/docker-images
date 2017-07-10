@@ -19,14 +19,16 @@ RUN apt-get update -y \
 	&& chmod +x wp-cli.phar \
 	&& mv wp-cli.phar /usr/local/bin/wp
 
-# Neovim
+# Neovim & tmux
 RUN	apt-get update -y \
 	&& apt-get install software-properties-common -y \
 	&& add-apt-repository ppa:neovim-ppa/stable -y \
 	&& apt-get update -y \
 	&& apt-get install neovim -y \
 	&& apt-get install python-dev python-pip python3-dev python3-pip -y \
-	&& update-alternatives --install /usr/bin/vim vim /usr/bin/nvim 60
+	&& update-alternatives --install /usr/bin/vim vim /usr/bin/nvim 60 \
+	&& pip3 install neovim \
+	&& apt-get install tmux -y
 
 # Other CLIs
 RUN apt-get update -y \
@@ -50,12 +52,14 @@ RUN apt-get update -y \
 RUN apt-get update -y \
 	&& apt-get install zsh -y \
 	&& bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
-	&& sed -i '/plugins=(git)/c\plugins=(git bower npm composer gulp grunt wp-cli extract yarn nvm)' ~/.zshrc \
+	&& sed -i '/plugins=(git)/c\plugins=(git bower npm composer gulp grunt wp-cli extract yarn nvm tmux)' ~/.zshrc \
 	&& sed -i '/\# ZSH_CUSTOM=\/path\/to\/new-custom-folder/c\ZSH_CUSTOM=~/custom-scripts' ~/.zshrc
 
 
 COPY custom-scripts/global-scripts.zsh /root/custom-scripts/global-scripts.zsh
 COPY custom-scripts/setup-scripts.zsh /root/custom-scripts/setup-scripts.zsh
+COPY custom-scripts/init.vim /root/.config/nvim/init.vim
+COPY custom-scripts/.tmux.conf /root/.tmux.conf
 
 # Misc.
 RUN apt-get --purge autoremove -y
