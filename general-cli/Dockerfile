@@ -50,7 +50,7 @@ RUN apt-get update -y \
 RUN apt-get update -y \
 	&& apt-get install zsh -y \
 	&& bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
-	&& sed -i '/plugins=(git)/c\plugins=(git bower npm composer gulp wp-cli extract yarn redis-cli)' ~/.zshrc \
+	&& sed -i '/plugins=(git)/c\plugins=(git bower npm composer gulp grunt wp-cli extract yarn nvm)' ~/.zshrc \
 	&& sed -i '/\# ZSH_CUSTOM=\/path\/to\/new-custom-folder/c\ZSH_CUSTOM=~/custom-scripts' ~/.zshrc
 
 
