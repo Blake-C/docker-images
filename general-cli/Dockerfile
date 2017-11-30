@@ -39,14 +39,15 @@ RUN apt-get update -y \
 	&& [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
 	&& [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" \
 	&& nvm install node \
-	&& nvm install v6.11.0 \
-	&& nvm alias default v6.11.0 \
+	&& nvm install v8.9.1 \
+	&& nvm alias default v8.9.1 \
 	&& npm install yarn -g \
 	&& npm install gulp -g \
 	&& npm install grunt -g \
 	&& npm install bower -g \
 	&& npm install eslint -g \
-	&& npm install sass-lint -g
+	&& npm install sass-lint -g \
+	&& npm install npm-check -g
 
 # ZSH
 RUN apt-get update -y \
