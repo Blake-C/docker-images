@@ -53,14 +53,14 @@ RUN apt-get update -y \
 RUN apt-get update -y \
 	&& apt-get install zsh -y \
 	&& bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
-	&& sed -i '/plugins=(git)/c\plugins=(git bower npm composer gulp grunt wp-cli extract yarn nvm tmux)' ~/.zshrc \
-	&& sed -i '/\# ZSH_CUSTOM=\/path\/to\/new-custom-folder/c\ZSH_CUSTOM=~/custom-scripts' ~/.zshrc
+	&& rm /root/.zshrc
 
 
 COPY custom-scripts/global-scripts.zsh /root/custom-scripts/global-scripts.zsh
 COPY custom-scripts/setup-scripts.zsh /root/custom-scripts/setup-scripts.zsh
 COPY custom-scripts/init.vim /root/.config/nvim/init.vim
 COPY custom-scripts/.tmux.conf /root/.tmux.conf
+COPY custom-scripts/.zshrc /root/.zshrc
 
 # Misc.
 RUN apt-get --purge autoremove -y
