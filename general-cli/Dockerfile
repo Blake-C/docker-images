@@ -8,7 +8,8 @@ RUN apt-get update -y \
 	&& apt-get install php7.0 -y \
 	&& apt-get install zip -y \
 	&& apt-get install mysql-client -y \
-	&& apt-get install php-mysql -y
+	&& apt-get install php-mysql -y \
+	&& apt-get install libpng-dev -y
 
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
