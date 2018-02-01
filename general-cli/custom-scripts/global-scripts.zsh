@@ -92,8 +92,8 @@ wp-init() {
     	# cd into theme
 		cd $SERVER_DIR/wp-content/themes/wp-foundation-six
 
-		echo "\nRunning Yarn"
-		yarn
+		echo "\nRunning NPM"
+		npm install
 
 		echo "\nRunning Gulp"
 		gulp
@@ -173,7 +173,7 @@ wp-eject() {
 
 			cd $SERVER_DIR/wp-content/themes/wp-foundation-six
 
-			yarn
+			npm install
 
 			gulp --build
 
