@@ -1,35 +1,43 @@
-FROM php:7.0.6-fpm-alpine
-MAINTAINER Blake Cerecero <blake@digitalblake.com>
+FROM php:7.0-fpm
 
-# We need these system-level scritps to run WordPress successfully
-RUN apk add --no-cache mysql-client curl \
-    imagemagick-dev
+# Install zip
+RUN apt-get update \
+    && apt-get install libzip-dev wget -y \
+    && pecl install zip -y
 
-# As per image documentation, this is how we install PHP modules
-RUN docker-php-ext-install -j$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
-    iconv gd mbstring fileinfo curl xmlreader xmlwriter spl ftp mysqli opcache
+# install the PHP extensions we need
+RUN set -ex; \
+	\
+	savedAptMark="$(apt-mark showmanual)"; \
+	\
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		libjpeg-dev \
+		libpng-dev \
+	; \
+	\
+	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
+	docker-php-ext-install gd mysqli opcache; \
+	\
+    # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
+	apt-mark auto '.*' > /dev/null; \
+	apt-mark manual $savedAptMark; \
+	ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
+		| awk '/=>/ { print $3 }' \
+		| sort -u \
+		| xargs -r dpkg-query -S \
+		| cut -d: -f1 \
+		| sort -u \
+		| xargs -rt apt-mark manual; \
+	\
+	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+	rm -rf /var/lib/apt/lists/*
 
-# Install imagemagick for PHP
-RUN apk add --no-cache libtool build-base autoconf \
-    && pecl install imagick \
-    && docker-php-ext-enable imagick
-
-RUN apk update && apk add --no-cache --virtual .build-deps autoconf gcc make wget \
-    g++ zlib-dev file g++ libc-dev make pkgconf \
-    tar curl php-pear tzdata php-dev php-phar libmemcached-dev \
-    && apk add php php-cli php-curl php-gd git php-json libmemcached \
-
-    # Xdebug
-    && cd /tmp && wget http://xdebug.org/files/xdebug-2.5.0.tgz \
+# Xdebug
+RUN cd /tmp && wget http://xdebug.org/files/xdebug-2.5.0.tgz \
     && tar -zxvf xdebug-2.5.0.tgz \
     && cd xdebug-2.5.0 && phpize \
-    && ./configure --enable-xdebug && make && make install \
-
-    # Cleanup
-    && apk del libtool build-base autoconf \
-    && rm -rf /tmp/* \
-    && rm -rf /var/cache/apk/* \
-    && apk del .build-deps && rm -rf tmp/*
+    && ./configure --enable-xdebug && make && make install
 
 # Copy xdebug configration for remote debugging
 COPY ./php.ini /usr/local/etc/php/php.ini
