@@ -1,5 +1,4 @@
 FROM ubuntu:16.04
-MAINTAINER Blake Cerecero <blake@digitalblake.com
 
 # PHP
 RUN apt-get update -y \
