@@ -7,6 +7,9 @@ alias bower="bower --allow-root"
 alias rm="rm -i"
 alias npmg="npm list -g --depth=0"
 
+# PHPCS
+alias phpcs_="phpcs --standard=./phpcs.xml --colors"
+
 # aliases for Tmux
 alias t='tmux -2'
 alias ta='tmux attach -t'

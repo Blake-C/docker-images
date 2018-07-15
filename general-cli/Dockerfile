@@ -55,6 +55,21 @@ RUN apt-get update -y \
 	&& bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
 	&& rm /root/.zshrc
 
+# PHPCS
+RUN	apt-get update -y \
+	&& apt-get install php-xml -y \
+	&& composer global require "squizlabs/php_codesniffer=3.*" \
+	&& mkdir /utilities \
+	&& cd /utilities \
+	&& git clone https://github.com/PHPCompatibility/PHPCompatibility.git \
+	&& cd PHPCompatibility \
+	&& git checkout tags/8.1.0 \
+	&& cd /utilities \
+	&& git clone https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git \
+	&& cd WordPress-Coding-Standards \
+	&& git checkout tags/0.14.1
+
+RUN /root/.composer/vendor/bin/phpcs --config-set installed_paths /utilities/WordPress-Coding-Standards,/utilities/PHPCompatibility
 
 COPY custom-scripts/global-scripts.zsh /root/custom-scripts/global-scripts.zsh
 COPY custom-scripts/setup-scripts.zsh /root/custom-scripts/setup-scripts.zsh
