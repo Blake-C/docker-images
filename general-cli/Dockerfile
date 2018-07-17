@@ -77,6 +77,14 @@ COPY custom-scripts/init.vim /root/.config/nvim/init.vim
 COPY custom-scripts/.tmux.conf /root/.tmux.conf
 COPY custom-scripts/.zshrc /root/.zshrc
 
+RUN ln -s /root/.nvm/versions/node/v8.9.1/bin/node /usr/bin/node \
+	&& ln -s /root/.nvm/versions/node/v8.9.1/bin/npm /usr/bin/npm \
+	&& ln -s /root/.nvm/versions/node/v8.9.1/bin/yarn /usr/bin/yarn \
+	&& ln -s /root/.nvm/versions/node/v8.9.1/bin/gulp /usr/bin/gulp \
+	&& ln -s /root/.nvm/versions/node/v8.9.1/bin/grunt /usr/bin/grunt \
+	&& ln -s /root/.composer/vendor/bin/phpcs /usr/bin/phpcs \
+	&& ln -s /usr/local/bin/wp /usr/bin/wp-cli
+
 # Misc.
 RUN apt-get --purge autoremove -y
 
